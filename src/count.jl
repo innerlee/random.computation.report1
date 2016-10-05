@@ -20,8 +20,8 @@ function go(ntry=1, k=100; verbose=true)
     loss(Ab, x) = loss(Ab[:, 1:end-1], Ab[:, end], x)
 
     # Count Sketch
-    ck = floor(Int, log2(d) * (sqrt(d) + sqrt(log2(n)))^2 / ɛ^2)
-    verbose && println("PHD, computed k = ", ck)
+    ck = floor(Int, d^2 * log2(d/ɛ) / ɛ^2)
+    verbose && println("Count Sketch, computed k = ", ck)
 
     verbose && println("actual use k = ", k)
 
@@ -31,19 +31,12 @@ function go(ntry=1, k=100; verbose=true)
     for i = 1:ntry
         verbose && print(".")
         tic()
-            # sample k rows
-            P = []
-            while length(P) < k
-                P = unique(rand(1:n, k))
-            end
-            # D
-            DAb = zeros(nextpow2(n), d + 1)
-            DAb[1:n, :] = rand([1,-1], n) .* Ab
-            # PH
-            PHDAb = fwht(DAb, 1)[P, :]
+            # sparse mat
+            S = sparse(rand(1:k, n), 1:n, rand([1,-1], n))
+            SAb = S * Ab
         time_prepare = toq()
         tic()
-            x = simple(PHDAb)
+            x = simple(SAb)
         time_apply = toq()
         err = loss(Ab, x)
         push!(results, (x, err, time_prepare, time_apply))
