@@ -6,7 +6,7 @@ Set $\varepsilon=0.1$ and $\delta=0.9$ in the following.
 We gather all the testing results in Table~\ref{tab:grand}.
 
 \begin{table}[htb]
-  \setlength{\tabcolsep}{3pt}
+  \setlength{\tabcolsep}{2.6pt}
   \caption{The performances of different Sketching techniques.
     other than the min loss, all are average values of repeats.
     prepare and apply are time spent on sketching and
@@ -17,13 +17,15 @@ We gather all the testing results in Table~\ref{tab:grand}.
   {\small
   \begin{tabular}{lllllllllll}
     \toprule
-    algorithm & repeat & ref-$k$ & $k$ & prepare (s) & apply (s) & avg loss & min loss & max loss & median loss & std loss \\
+    algorithm & repeat & ref-$k$ & $k$ & prepare (s) & apply (s) & min loss & max loss & median loss & std loss & mean loss \\
     \midrule
     Baseline & 10 & - & - & 0 & 0.19 & 15090.7 & 15090.7 \\
     Gaussian & 100 & 2432 & 10 & 0.77 & 0.0101 & 320020.0 & 22505.9 \\
     Gaussian & 100 & 2432 & 100 & 7.79 & 0.0097 & 16908.0 & 15781.0 \\
     PHD & 100 & 37234 & 100 & 3.73 & 0.0159 & 17054.0 & 15573.8 \\
     PHD & 100 & 37234 & 1000 & 3.710 & 0.0135 & 15244.0 & 15144.6 \\
+    Count & 100 & 340198 & 100 \\
+    Count & 100 & 340198 & 1000 \\
     \bottomrule
   \end{tabular}
   }
@@ -33,10 +35,10 @@ We gather all the testing results in Table~\ref{tab:grand}.
 \subsection{Gaussian}
 By Theorem~6 in the text book article~\cite{woodruff2014sketching},
 \begin{equation}
-    k=\Theta((d+\log(1/\delta))\epsilon^{-2}),
+    k=\Theta((d+\log(1/\delta))\varepsilon^{-2}),
 \end{equation}
 $k$ is a multiple of $(21+log(10))\times100\approx2432$.
-This is too large for real computation, so we set $k=100$.
+This is too large for real computation, so we set $k=10$ and $k=100$.
 Results are shown in Table~\ref{tab:grand}.
 The minimum point when $k=100$ is
 {
@@ -49,7 +51,7 @@ The minimum point when $k=100$ is
 	\OldComma%
 	\fi%
 }%
-$x* = (0.595, 0.076, -0.849, 0.829, -0.142, -0.167, 0.909,
+$x^* = (0.595, 0.076, -0.849, 0.829, -0.142, -0.167, 0.909,
 -0.788, 0.303, -16.9, 14.8, -51.4, 49.3, -0.637, 2.696, -1.721,
 0.853, -0.084, 0.367, -0.393, -0.089)$ with loss $f(x^*) = 15781.0$.
 }
@@ -62,13 +64,15 @@ $H$ is Hardamard matrix and $D$ a diagonal matrix.
 Since size of $H$ is required to be a power of 2,
 we pad the the $n$ dimensional vectors to the
 smallest power of 2 that is larger than $n$.
+We use \emph{Hadamard.jl} package in Julia for the computation
+of the Hadamard transform.
 By Theorem~7, the selected row number
 \begin{equation}
-    r=\Omega\big((\log(d))(\sqrt{d}+\sqrt{\log(n)})^2\epsilon^{-2}\big).
+    k=\Omega\big((\log(d))(\sqrt{d}+\sqrt{\log(n)})^2\varepsilon^{-2}\big).
 \end{equation}
 A reference number for $k$ is
 $\log(21)\times(\sqrt{21}+\sqrt{\log(2741220)})^2\times100\approx37234$.
-This is too large for computation, thus we set $k=100$.
+This is too large for computation, thus we set $k=100$ and $k=1000$.
 Results are shown in Table~\ref{tab:grand}.
 The minimum point when $k=1000$ is
 {
@@ -81,11 +85,34 @@ The minimum point when $k=1000$ is
 	\OldComma%
 	\fi%
 }%
-$x* = ()$
+$x^* = ()$
 with loss $f(x^*) = .0$.
 }
+
 %
 \subsection{Count Sketch}
-
+By Theorem~8, the $k$ (we use $k$ here for consistency,
+$r$ is used in the article) is,
+\begin{equation}
+    k=\mathcal{O}\big(d^2\text{poly}(\log(d/\varepsilon))\varepsilon^{-2}\big).
+\end{equation}
+A reference number for $k$ is
+$21^2\times\log(21/0.1)\times100\approx 340198$.
+This is too large for computation, thus we set $k=100$ and $k=1000$.
+Results are shown in Table~\ref{tab:grand}.
+The minimum point when $k=1000$ is
+{
+\def\OldComma{,}
+\catcode`\,=13
+\def,{%
+	\ifmmode%
+	\OldComma\discretionary{}{}{}%
+	\else%
+	\OldComma%
+	\fi%
+}%
+$x^* = ()$
+with loss $f(x^*) = .0$.
+}
 
 \subsection{Leverage Score}
