@@ -1,7 +1,8 @@
 # hw1
 
 * details see [report.pdf](report.pdf).
-* codes are in ``src/`` and written in [Julia](http://julialang.org/).
+* codes are in [src/](src/) and written in [Julia](http://julialang.org/).
+* raw outputs from codes are availble at [result/](result/) folder.
 
 ## data preparation
 
