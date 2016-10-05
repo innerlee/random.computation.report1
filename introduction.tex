@@ -41,14 +41,14 @@ The distribution of these inputs was shown in Figure~\ref{fig:box}.
 
 Firstly, direct compute the least square problem \eqref{eq:ls}
 by equation
-\begin{equation}
-    x^*=(A_0^TA_0)^{-1}A_0^Tb_0.
+\begin{equation} \label{eq:psudo}
+    x_0^*=(A_0^TA_0)^{-1}A_0^Tb_0.
 \end{equation}
 we get
 $$
-    x^*=(0.758, 0.046, 0.218, \dots, -0.035, -0.101)
+    x_0^*=(0.758, 0.046, 0.218, \dots, -0.035, -0.101)
 $$
-with loss $f(x^*) = 156.1$ in $0.24$ seconds.
+with loss $f(x_0^*) = 156.1$ in $0.24$ seconds.
 Compared to $12.2$, the mean value of $b_0$,
 the loss seems too large.
 The $99$-th percentile of prediction values in $b_0$ is $144$.
@@ -58,7 +58,7 @@ and get new data
     A \in \real^{2741220\times 21}, \,
     b\in\real^{2741220}.
 \end{equation}
-Directly compute again, we have
+Directly compute using Equation~\eqref{eq:psudo} again, we have
 $$
     x^*=(0.189, -0.012, -0.008, \dots, 0.042, -0.040)
 $$
