@@ -21,9 +21,9 @@ function go(ntry=1, k=100; verbose=true)
 
     # PHD
     ck = floor(Int, log2(d) * (sqrt(d) + sqrt(log2(n)))^2 / ɛ^2)
-    println("PHD, computed k = ", ck)
+    verbose && println("PHD, computed k = ", ck)
 
-    println("actual use k = ", k)
+    verbose && println("actual use k = ", k)
 
     # result format for each try (x, err, time_prepare, time_apply)
     results = []
@@ -48,15 +48,18 @@ function go(ntry=1, k=100; verbose=true)
         err = loss(Ab, x)
         push!(results, (x, err, time_prepare, time_apply))
     end
+    println()
 
     results
 end
 
 # config
-ntry = 100
-k = 100
+length(ARGS) != 2 && error("args: ntry, k")
+ntry = eval(parse(ARGS[1]))
+k = eval(parse(ARGS[2]))
 
 # main
+go(1, 10, verbose=false)
 r = go(ntry, k)
 xs = [r[i][1] for i = 1:length(r)]
 errs = [r[i][2] for i = 1:length(r)]
@@ -67,6 +70,7 @@ println("repeat $(length(r)) times")
 println("k = ", k)
 println("mean prepare time = ", mean(time_prepares))
 println("mean apply time = ", mean(time_applys))
-println("mean error = ", mean(errs))
-println("x = ", xs[indmin(errs)])
-println("min error = ", minimum(errs))
+println("min/median/max/std/mean error = ", round(
+    [minimum(errs), median(errs), maximum(errs), std(errs), mean(errs)],
+    1))
+println("x = ", round(xs[indmin(errs)], 3))

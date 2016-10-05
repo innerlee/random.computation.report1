@@ -1,4 +1,5 @@
 using JLD
+using Hadamard
 
 function go(ntry=1, k=100; verbose=true)
     # load data
@@ -18,9 +19,9 @@ function go(ntry=1, k=100; verbose=true)
     loss(A, b, x) = norm(A * x - b)
     loss(Ab, x) = loss(Ab[:, 1:end-1], Ab[:, end], x)
 
-    # Gaussian
-    ck = floor(Int, (d + log2(1 / δ)) / ɛ^2)
-    verbose && println("Gaussian, computed k = ", ck)
+    # Count Sketch
+    ck = floor(Int, log2(d) * (sqrt(d) + sqrt(log2(n)))^2 / ɛ^2)
+    verbose && println("PHD, computed k = ", ck)
 
     verbose && println("actual use k = ", k)
 
@@ -30,10 +31,19 @@ function go(ntry=1, k=100; verbose=true)
     for i = 1:ntry
         verbose && print(".")
         tic()
-        SAb = vcat([randn(1, n) * Ab / sqrt(k) for i=1:k]...)
+            # sample k rows
+            P = []
+            while length(P) < k
+                P = unique(rand(1:n, k))
+            end
+            # D
+            DAb = zeros(nextpow2(n), d + 1)
+            DAb[1:n, :] = rand([1,-1], n) .* Ab
+            # PH
+            PHDAb = fwht(DAb, 1)[P, :]
         time_prepare = toq()
         tic()
-            x = simple(SAb)
+            x = simple(PHDAb)
         time_apply = toq()
         err = loss(Ab, x)
         push!(results, (x, err, time_prepare, time_apply))
