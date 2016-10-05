@@ -1,5 +1,5 @@
 using JLD
-using Hadamard
+using StatsBase
 
 function go(ntry=1, k=100; verbose=true)
     # load data
@@ -21,7 +21,7 @@ function go(ntry=1, k=100; verbose=true)
 
     # Leverage Score
     ck = floor(Int, 144 * d * log(2 * d / δ) / (ɛ^2))
-    verbose && println("Count Sketch, computed k = ", ck)
+    verbose && println("Leverage Score, computed k = ", ck)
 
     verbose && println("use k = ", k)
 
@@ -31,11 +31,17 @@ function go(ntry=1, k=100; verbose=true)
     for i = 1:ntry
         verbose && print(".")
         tic()
-            # sparse mat
-            s, vv, dd = svd(A)
-            vd = diagm(vv) * dd
-            p = sum(s .* s, 2)[:] / d
-            SAb = S * Ab
+            # Ab = ZR
+            Z, _, _ = svd(Ab)
+            p = sum(Z .* Z, 2)[:] / (d + 1)
+            # S = DΩ
+            Ω = spzeros(k, n)
+            D = spzeros(k, k)
+            for j = 1:k
+                Ω[j, sample(WeightVec(p))] = 1
+                D[j, j] = 1 / sqrt(p[j] * k)
+            end
+            SAb = D * Ω * Ab
         time_prepare = toq()
         tic()
             x = simple(SAb)

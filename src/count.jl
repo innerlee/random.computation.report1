@@ -1,5 +1,4 @@
 using JLD
-using Hadamard
 
 function go(ntry=1, k=100; verbose=true)
     # load data
