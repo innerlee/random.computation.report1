@@ -9,7 +9,7 @@ We gather all the testing results in Table~\ref{tab:grand}.
   \setlength{\tabcolsep}{2.6pt}
   \caption{The performances of different Sketching techniques.
     other than the min loss, all are average values of repeats.
-    prepare and apply are time spent on sketching and
+    \emph{prep} and \emph{app} are time spent on sketching and
     on solving the shrinked sized least square problem, respectively.
     ref-$k$ is the reference value for $k$.}
   \label{tab:grand}
@@ -17,7 +17,7 @@ We gather all the testing results in Table~\ref{tab:grand}.
   {\small
   \begin{tabular}{lllllllllll}
     \toprule
-    algorithm & repeat & ref-$k$ & $k$ & prep (s) & apply (ms) & min loss & median loss & max loss & std loss & mean loss \\
+    algorithm & repeat & ref-$k$ & $k$ & prep (s) & app (ms) & min loss & median loss & max loss & std loss & mean loss \\
     \midrule
     Baseline & 10 & - & - & 0 & 190 & 15090.7 & 15090.7 \\
     Gaussian & 100 & 2432 & 10 & 0.76 & 0.3 & 20479.8 & 76514.7 & 1268090 & 177191.0 & 126311 \\
@@ -27,7 +27,7 @@ We gather all the testing results in Table~\ref{tab:grand}.
     Count & 100 & 340198 & 1000 & 1.17 & 0.4 & 15157.6 & 15240.8 & 15397.1 & 43.0 & 15246.7 \\
     Count & 100 & 340198 & 10000 & 1.20 & 1.1 & 15096.8 & 15105.3 & 15122.3 & 5.3 & 15106.5 \\
     Leverage & 100 \\
-    Leverage & 100
+    Leverage & 100 \\
     \bottomrule
   \end{tabular}
   }
