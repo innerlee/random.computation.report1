@@ -44,7 +44,7 @@ that has an 16-core Intel Xeon E5-2637 v2 CPU at 3.5GHz,
 and 256G memory.
 Codes were implemented using the Julia language.
 
-\subsection{Preprocess and Baselines}
+\subsection{Preprocess and Baselines} \label{sec:preprocess}
 
 Since some observations are not complete,
 we first filter out 2,769,088 samples that do not contain missing values.
@@ -73,7 +73,7 @@ by equation
 \begin{equation} \label{eq:psudo}
     x_0^*=(A_0^TA_0)^{-1}A_0^Tb_0.
 \end{equation}
-we get
+We get
 $$
     x_0^*=(0.758, 0.046, 0.218, \dots, -0.035, -0.101)
 $$
@@ -83,7 +83,7 @@ the average loss seems too large due to outliers.
 The $99$-th percentile of prediction values in $b_0$ is $144.0$.
 We then use samples that have prediction values less than $144.0$
 and get new data
-\begin{equation}
+\begin{equation} \label{eq:data}
     A \in \real^{2741220\times 21}, \,
     b\in\real^{2741220}.
 \end{equation}
