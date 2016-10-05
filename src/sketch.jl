@@ -20,9 +20,10 @@ function go(ntry=1; verbose=true)
 
     # Gaussian
     k = floor(Int, (d + log(1 / δ)) / ɛ^2)
-    println("Gaussian, k = ", k)
+    println("Gaussian, computed k = ", k)
 
     k = 100
+    println("actual use k = ", k)
 
     # result format for each try (x, err, time_prepare, time_apply)
     results = []
