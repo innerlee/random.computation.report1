@@ -17,15 +17,17 @@ We gather all the testing results in Table~\ref{tab:grand}.
   {\small
   \begin{tabular}{lllllllllll}
     \toprule
-    algorithm & repeat & ref-$k$ & $k$ & prepare (s) & apply (s) & min loss & max loss & median loss & std loss & mean loss \\
+    algorithm & repeat & ref-$k$ & $k$ & prep (s) & apply (s) & min loss & max loss & median loss & std loss & mean loss \\
     \midrule
     Baseline & 10 & - & - & 0 & 0.19 & 15090.7 & 15090.7 \\
     Gaussian & 100 & 2432 & 10 & 0.77 & 0.0101 & 320020.0 & 22505.9 \\
     Gaussian & 100 & 2432 & 100 & 7.79 & 0.0097 & 16908.0 & 15781.0 \\
     PHD & 100 & 37234 & 100 & 3.73 & 0.0159 & 17054.0 & 15573.8 \\
-    PHD & 100 & 37234 & 1000 & 3.710 & 0.0135 & 15244.0 & 15144.6 \\
-    Count & 100 & 340198 & 100 \\
-    Count & 100 & 340198 & 1000 \\
+    PHD & 100 & 37234 & 1000 & 3.71 & 0.0135 & 15244.0 & 15144.6 \\
+    Count & 100 & 340198 & 1000 & 1.17 & 0.0004 \\
+    Count & 100 & 340198 & 10000 \\
+    Leverage & 100 \\
+    Leverage & 100
     \bottomrule
   \end{tabular}
   }
@@ -72,7 +74,7 @@ By Theorem~7, the selected row number
 \end{equation}
 A reference number for $k$ is
 $\log(21)\times(\sqrt{21}+\sqrt{\log(2741220)})^2\times100\approx37234$.
-This is too large for computation, thus we set $k=100$ and $k=1000$.
+This is too large for computation, thus we set $k=1000$ and $k=1000$.
 Results are shown in Table~\ref{tab:grand}.
 The minimum point when $k=1000$ is
 {
@@ -98,9 +100,9 @@ $r$ is used in the article) is,
 \end{equation}
 A reference number for $k$ is
 $21^2\times\log(21/0.1)\times100\approx 340198$.
-This is too large for computation, thus we set $k=100$ and $k=1000$.
+This is too large for computation, thus we set $k=1000$ and $k=10000$.
 Results are shown in Table~\ref{tab:grand}.
-The minimum point when $k=1000$ is
+The minimum point when $k=10000$ is
 {
 \def\OldComma{,}
 \catcode`\,=13
