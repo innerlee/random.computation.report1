@@ -1,6 +1,7 @@
 using JLD
+using Hadamard
 
-function go(ntry=1; verbose=true)
+function go(ntry=1, k=100; verbose=true)
     # load data
     data = load("../output/data.jld")
     A = data["A"]
@@ -19,10 +20,9 @@ function go(ntry=1; verbose=true)
     loss(Ab, x) = loss(Ab[:, 1:end-1], Ab[:, end], x)
 
     # PHD
-    k = floor(Int, (d + log(1 / δ)) / ɛ^2)
-    println("PHD, computed k = ", k)
+    ck = floor(Int, log2(d) * (sqrt(d) + sqrt(log2(n)))^2 / ɛ^2)
+    println("PHD, computed k = ", ck)
 
-    k = 100
     println("actual use k = ", k)
 
     # result format for each try (x, err, time_prepare, time_apply)
@@ -31,10 +31,19 @@ function go(ntry=1; verbose=true)
     for i = 1:ntry
         verbose && print(".")
         tic()
-        SAb = vcat([randn(1, n) * Ab / sqrt(k) for i=1:k]...)
+        # sample k rows
+        P = []
+        while length(P) < k
+            P = unique(rand(1:n, k))
+        end
+        # D
+        DAb = zeros(nextpow2(n), d + 1)
+        DAb[1:n, :] = rand([1,-1], n) .* Ab
+        # PH
+        PHDAb = fwht(DAb, 1)[P, :]
         time_prepare = toq()
         tic()
-            x = simple(SAb)
+            x = simple(PHDAb)
         time_apply = toq()
         err = loss(Ab, x)
         push!(results, (x, err, time_prepare, time_apply))
@@ -43,7 +52,12 @@ function go(ntry=1; verbose=true)
     results
 end
 
-r = go(1)
+# config
+ntry = 100
+k = 100
+
+# main
+r = go(ntry, k)
 xs = [r[i][1] for i = 1:length(r)]
 errs = [r[i][2] for i = 1:length(r)]
 time_prepares = [r[i][3] for i = 1:length(r)]
@@ -53,4 +67,5 @@ println("repeat $(length(r)) times")
 println("mean prepare time = ", mean(time_prepares))
 println("mean apply time = ", mean(time_applys))
 println("mean error = ", mean(errs))
+println("x = ", xs[indmin(errs)])
 println("min error = ", minimum(errs))

@@ -19,7 +19,7 @@ function go(ntry=1; verbose=true)
     loss(Ab, x) = loss(Ab[:, 1:end-1], Ab[:, end], x)
 
     # Gaussian
-    k = floor(Int, (d + log(1 / δ)) / ɛ^2)
+    k = floor(Int, (d + log2(1 / δ)) / ɛ^2)
     println("Gaussian, computed k = ", k)
 
     k = 100
@@ -43,7 +43,7 @@ function go(ntry=1; verbose=true)
     results
 end
 
-r = go(10)
+r = go(100)
 xs = [r[i][1] for i = 1:length(r)]
 errs = [r[i][2] for i = 1:length(r)]
 time_prepares = [r[i][3] for i = 1:length(r)]
@@ -53,4 +53,5 @@ println("repeat $(length(r)) times")
 println("mean prepare time = ", mean(time_prepares))
 println("mean apply time = ", mean(time_applys))
 println("mean error = ", mean(errs))
+println("x = ", xs[indmin(errs)])
 println("min error = ", minimum(errs))
