@@ -17,15 +17,15 @@ We gather all the testing results in Table~\ref{tab:grand}.
   {\small
   \begin{tabular}{lllllllllll}
     \toprule
-    algorithm & repeat & ref-$k$ & $k$ & prep (s) & apply (s) & min loss & max loss & median loss & std loss & mean loss \\
+    algorithm & repeat & ref-$k$ & $k$ & prep (s) & apply (ms) & min loss & median loss & max loss & std loss & mean loss \\
     \midrule
-    Baseline & 10 & - & - & 0 & 0.19 & 15090.7 & 15090.7 \\
-    Gaussian & 100 & 2432 & 10 & 0.77 & 0.0101 & 320020.0 & 22505.9 \\
-    Gaussian & 100 & 2432 & 100 & 7.79 & 0.0097 & 16908.0 & 15781.0 \\
-    PHD & 100 & 37234 & 100 & 3.73 & 0.0159 & 17054.0 & 15573.8 \\
-    PHD & 100 & 37234 & 1000 & 3.71 & 0.0135 & 15244.0 & 15144.6 \\
-    Count & 100 & 340198 & 1000 & 1.17 & 0.0004 \\
-    Count & 100 & 340198 & 10000 \\
+    Baseline & 10 & - & - & 0 & 190 & 15090.7 & 15090.7 \\
+    Gaussian & 100 & 2432 & 10 & 0.76 & 0.3 & 20479.8 & 76514.7 & 1268090 & 177191.0 & 126311 \\
+    Gaussian & 100 & 2432 & 100 & 7.44 & 9.7 & 16080.5 & 16983.8 & 18631.3 & 583.3 & 17059.5 \\
+    PHD & 100 & 37234 & 100 & 3.76 & 0.4 & 15927.6 & 16977.5 & 19309.7 & 635.3 & 16999.5 \\
+    PHD & 100 & 37234 & 1000 & 3.72 & 1.1 & 15159.7 & 15252.5 & 15364.3 & 45.4 & 15248.1 \\
+    Count & 100 & 340198 & 1000 & 1.17 & 0.4 & 15157.6 & 15240.8 & 15397.1 & 43.0 & 15246.7 \\
+    Count & 100 & 340198 & 10000 & 1.20 & 1.1 & 15096.8 & 15105.3 & 15122.3 & 5.3 & 15106.5 \\
     Leverage & 100 \\
     Leverage & 100
     \bottomrule
