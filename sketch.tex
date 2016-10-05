@@ -26,8 +26,8 @@ We gather all the testing results in Table~\ref{tab:grand}.
     PHD & 100 & 37234 & 1000 & 3.72 & 1.1 & 15159.7 & 15252.5 & 15364.3 & 45.4 & 15248.1 \\
     Count & 100 & 340198 & 1000 & 1.17 & 0.4 & 15157.6 & 15240.8 & 15397.1 & 43.0 & 15246.7 \\
     Count & 100 & 340198 & 10000 & 1.20 & 1.1 & 15096.8 & 15105.3 & 15122.3 & 5.3 & 15106.5 \\
-    Leverage & 100 & 1826573 & 1000 \\
-    Leverage & 100 & 1826573 & 10000 \\
+    Leverage & 100 & 1826573 & 10000 & 1.15 & 1.1  \\
+    Leverage & 100 & 1826573 & 100000  \\
     \bottomrule
   \end{tabular}
   }
@@ -130,7 +130,7 @@ and the $k$ of the article correspond to $d$ here) is,
 \end{equation}
 A reference number for $k$ is
 $144\times 21 \times \ln(2\times 21 \times 10)\times100\approx 1826573$.
-This is too large for computation, thus we set $k=1000$ and $k=10000$.
+This is too large for computation, thus we set $k=10000$ and $k=100000$.
 Results are shown in Table~\ref{tab:grand}.
 The minimum point when $k=10000$ is
 {
