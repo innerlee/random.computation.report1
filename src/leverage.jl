@@ -28,21 +28,23 @@ function go(ntry=1, k=100; verbose=true)
     # result format for each try (x, err, time_prepare, time_apply)
     results = []
     # try multiple times
+    # Ab = ZR
+    tic()
+    Z, _, _ = svd(Ab)
+    p = sum(Z .* Z, 2)[:] / (d + 1)
+    svd_time = toq()
     for i = 1:ntry
         verbose && print(".")
         tic()
-            # Ab = ZR
-            Z, _, _ = svd(Ab)
-            p = sum(Z .* Z, 2)[:] / (d + 1)
             # S = DΩ
-            Ω = spzeros(k, n)
+            cols = sample(1:n, WeightVec(p), k)
+            Ω = sparse(1:k, cols, 1, k, n)
             D = spzeros(k, k)
             for j = 1:k
-                Ω[j, sample(WeightVec(p))] = 1
-                D[j, j] = 1 / sqrt(p[j] * k)
+                D[j, j] = 1 / sqrt(p[cols[j]] * k)
             end
             SAb = D * Ω * Ab
-        time_prepare = toq()
+        time_prepare = toq() + svd_time
         tic()
             x = simple(SAb)
         time_apply = toq()
