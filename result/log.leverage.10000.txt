@@ -1,5 +1,5 @@
 
-Count Sketch, computed k = 340198
+Leverage Score, computed k = 340198
 actual use k = 10000
 ....................................................................................................
 repeat 100 times
