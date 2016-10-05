@@ -20,7 +20,7 @@ function go(ntry=1, k=100; verbose=true)
     loss(Ab, x) = loss(Ab[:, 1:end-1], Ab[:, end], x)
 
     # Leverage Score
-    ck = 144 * d * log(2 * d / δ) / (ɛ^2)
+    ck = floor(Int, 144 * d * log(2 * d / δ) / (ɛ^2))
     verbose && println("Count Sketch, computed k = ", ck)
 
     verbose && println("use k = ", k)
