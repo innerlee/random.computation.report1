@@ -4,20 +4,45 @@
 This report use sketching methods to deal with the
 least square problem which minimizes
 \begin{equation} \label{eq:ls}
-    f(x) = \frac{1}{\sqrt{n}} \|Ax-b\|_2,
+    f(x) = \|Ax-b\|_2,
 \end{equation}
 where $A\in\real^{n\times d}$, $b\in\real^n$, and $x\in\real^d$.
+The four sketching methods are
+\emph{Gaussian}, \emph{PHD}, \emph{Count Sketch},
+and \emph{Leverage Score}.
+
+\subsection{Dataset}
+
 We use the \emph{how much did it rain ii} \cite{rain, Lakshmanan16}
 dataset from \emph{kaggle.com} for the analysis of different sketching methods.
 The original dataset contains 13,765,201 training samples
 with 23 features and 1 prediction value.
-See the Appendix for detailed description of features.
+The following description was extracted from web page \cite{rain}.
+
+\begin{description}[align=left,labelindent=2em]
+\item [Id]  A unique number for the set of observations over an hour at a gauge.
+\item [Minutes\_past]  For each set of radar observations,
+the minutes past the top of the hour that the radar observations were carried out.
+Radar observations are snapshots at that point in time.
+\item [Radardist\_km]  Distance of gauge from the radar whose observations are being reported.
+\item [Ref]  Radar reflectivity in km.
+\item [Ref\_5x5\_10th, Ref\_5x5\_50th, Ref\_5x5\_90th]
+10th, 50-th, 90-th percentile of reflectivity values
+in 5x5 neighborhood around the gauge.
+\item [RefComposite, RefComposite\_5x5\_10th, RefComposite\_5x5\_50th, RefComposite\_5x5\_90th]
+Maximum reflectivity in the vertical column above gauge.  In dBZ.
+\item [RhoHV, RhoHV\_5x5\_10th, RhoHV\_5x5\_50th, RhoHV\_5x5\_90th]  Correlation coefficient.
+\item [Zdr, Zdr\_5x5\_10th, Zdr\_5x5\_50th, Zdr\_5x5\_90th]    Differential reflectivity in dB
+\item [Kdp, Kdp\_5x5\_10th, Kdp\_5x5\_50th, Kdp\_5x5\_90th]  Specific differential phase (deg/km)
+\item [Expected]  Actual gauge observation in mm at the end of the hour.
+\end{description}
+
 Since it contains null values and outliers,
 we will do a preprocess and only use a subset of samples.
 All the experiments were conducted on a machine
-that has an 16-core Intel Xeon E5-2637 v2 @ 3.5GHz CPU,
+that has an 16-core Intel Xeon E5-2637 v2 CPU at 3.5GHz,
 and 256G memory.
-Codes were written in Julia.
+Codes were implemented using the Julia language.
 
 \subsection{Preprocess and Baselines}
 
@@ -52,22 +77,25 @@ we get
 $$
     x_0^*=(0.758, 0.046, 0.218, \dots, -0.035, -0.101)
 $$
-with loss $f(x_0^*) = 156.1$ in $0.24$ seconds.
-Compared to $12.2$, the mean value of $b_0$,
-the loss seems too large.
-The $99$-th percentile of prediction values in $b_0$ is $144$.
-We then use samples that have prediction values less than $144$
+with average loss $f(x_0^*)/\sqrt{n} = 156.1$ in $0.24$ seconds.
+Compared to $\text{mean}(b_0)=12.2$, the mean value of $b_0$,
+the average loss seems too large due to outliers.
+The $99$-th percentile of prediction values in $b_0$ is $144.0$.
+We then use samples that have prediction values less than $144.0$
 and get new data
 \begin{equation}
     A \in \real^{2741220\times 21}, \,
     b\in\real^{2741220}.
 \end{equation}
-Directly compute using Equation~\eqref{eq:psudo} again, we have
+Directly compute $x^*$ using Equation~\eqref{eq:psudo} again, we have
 $$
     x^*=(0.189, -0.012, -0.008, \dots, 0.042, -0.040)
 $$
-with loss $f(x^*) = 9.11$ in $0.24$ seconds.
+with loss $f(x^*) = 15090.7$ in $0.24$ seconds.
 This makes more sense because
+the average loss
+$f(x_0^*)/\sqrt{n} = 9.11$
+is comparable to stats like
 $\text{mean}(b)=4.24$,
 $\text{std}(b) = 9.30$,
 $\text{minimum}(b) = 0.01$, and

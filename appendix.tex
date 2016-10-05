@@ -2,24 +2,3 @@
 \setcounter{secnumdepth}{0}
 \section{Appendix} \label{app}
 
-\subsection{Dataset Description}
-
-The following dataset description was extracted from web page \cite{rain}.
-
-\begin{description}[align=left,labelindent=2em]
-\item [Id]  A unique number for the set of observations over an hour at a gauge.
-\item [Minutes\_past]  For each set of radar observations,
-the minutes past the top of the hour that the radar observations were carried out.
-Radar observations are snapshots at that point in time.
-\item [Radardist\_km]  Distance of gauge from the radar whose observations are being reported.
-\item [Ref]  Radar reflectivity in km.
-\item [Ref\_5x5\_10th, Ref\_5x5\_50th, Ref\_5x5\_90th]
-10th, 50-th, 90-th percentile of reflectivity values
-in 5x5 neighborhood around the gauge.
-\item [RefComposite, RefComposite\_5x5\_10th, RefComposite\_5x5\_50th, RefComposite\_5x5\_90th]
-Maximum reflectivity in the vertical column above gauge.  In dBZ.
-\item [RhoHV, RhoHV\_5x5\_10th, RhoHV\_5x5\_50th, RhoHV\_5x5\_90th]  Correlation coefficient.
-\item [Zdr, Zdr\_5x5\_10th, Zdr\_5x5\_50th, Zdr\_5x5\_90th]    Differential reflectivity in dB
-\item [Kdp, Kdp\_5x5\_10th, Kdp\_5x5\_50th, Kdp\_5x5\_90th]  Specific differential phase (deg/km)
-\item [Expected]  Actual gauge observation in mm at the end of the hour.
-\end{description}
