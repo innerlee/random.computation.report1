@@ -36,11 +36,11 @@ function go(ntry=1, k=100; verbose=true)
         while length(P) < k
             P = unique(rand(1:n, k))
         end
-        # D
+        # D and padding
         DAb = zeros(nextpow2(n), d + 1)
         DAb[1:n, :] = rand([1,-1], n) .* Ab
         # PH
-        PHDAb = fwht(DAb, 1)[P, :]
+        PHDAb = fwht(DAb, 1)[P, :] / sqrt(k)
         time_prepare = toq()
         tic()
             x = simple(PHDAb)
