@@ -1,4 +1,5 @@
 using JLD
+using StatsBase
 
 function save_valid_data()
     # 206s to load "train.csv"
@@ -19,4 +20,14 @@ function save_valid_data()
     b = map(Float64, data[missing .== 0, 24])
 
     save("../output/valid.data.jld", "A", A, "b", b)
+end
+
+function save_valid_data_no_outlier()
+    d = load("../output/valid.data.jld")
+    p = percentile(d["b"], 99)
+    fil = d["b"] .< p
+    println("99-th percentile of b = ", p)
+    println("there are $(sum(fil)) points")
+
+    save("../output/data.jld", "A", d["A"][fil, :], "b", d["b"][fil])
 end
