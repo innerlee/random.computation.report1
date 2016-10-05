@@ -64,6 +64,7 @@ time_prepares = [r[i][3] for i = 1:length(r)]
 time_applys = [r[i][4] for i = 1:length(r)]
 
 println("repeat $(length(r)) times")
+println("k = ", k)
 println("mean prepare time = ", mean(time_prepares))
 println("mean apply time = ", mean(time_applys))
 println("mean error = ", mean(errs))

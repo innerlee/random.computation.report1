@@ -1,6 +1,6 @@
 using JLD
 
-function go(ntry=1; verbose=true)
+function go(ntry=1, k=100; verbose=true)
     # load data
     data = load("../output/data.jld")
     A = data["A"]
@@ -19,10 +19,9 @@ function go(ntry=1; verbose=true)
     loss(Ab, x) = loss(Ab[:, 1:end-1], Ab[:, end], x)
 
     # Gaussian
-    k = floor(Int, (d + log2(1 / δ)) / ɛ^2)
-    println("Gaussian, computed k = ", k)
+    ck = floor(Int, (d + log2(1 / δ)) / ɛ^2)
+    println("Gaussian, computed k = ", ck)
 
-    k = 100
     println("actual use k = ", k)
 
     # result format for each try (x, err, time_prepare, time_apply)
@@ -43,13 +42,19 @@ function go(ntry=1; verbose=true)
     results
 end
 
-r = go(100)
+# config
+ntry = 100
+k = 100
+
+# main
+r = go(ntry, k)
 xs = [r[i][1] for i = 1:length(r)]
 errs = [r[i][2] for i = 1:length(r)]
 time_prepares = [r[i][3] for i = 1:length(r)]
 time_applys = [r[i][4] for i = 1:length(r)]
 
 println("repeat $(length(r)) times")
+println("k = ", k)
 println("mean prepare time = ", mean(time_prepares))
 println("mean apply time = ", mean(time_applys))
 println("mean error = ", mean(errs))
