@@ -2,6 +2,7 @@
 using JLD
 using JuMP
 using StatsBase
+using Distributions
 
 include("l1.baseline.jl")
 include("l1.cauchy.jl")
@@ -25,14 +26,19 @@ MAX_SAMPLE = min(MAX_SAMPLE, size(A, 1))
 Ab         = Ab[1:MAX_SAMPLE, :]
 seed_data  = Ab[1:10, :]
 
-# baseline
-baseline_bench(seed_data, verbose=false)
-baseline_bench(Ab)
+n, d = size(Ab)
+
+# # baseline
+# baseline_bench(seed_data, verbose=false)
+# baseline_bench(Ab)
 
 # cauchy
-cauchy_bench(seed_data, verbose=false)
-cauchy_bench(Ab)
+r_cauchy   = 64
+r_gauss    = 16
+r_leverage = 100
+# cauchy_bench(seed_data, verbose=false)
+cauchy_bench(Ab, r_cauchy, r_gauss, r_leverage)
 
-# exponential
-exponential_bench(seed_data, verbose=false)
-exponential_bench(Ab)
+# # exponential
+# exponential_bench(seed_data, verbose=false)
+# exponential_bench(Ab)
