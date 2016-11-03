@@ -7,7 +7,7 @@ using Distributions
 include("l1.solver.jl")
 
 # config
-MAX_SAMPLE = 10000
+MAX_SAMPLE = 20000
 
 # load data
 data = load("../output/data.jld");
@@ -31,13 +31,13 @@ cost0 = baseline_bench(Ab)
 # cauchy
 r_cauchy   = 64
 r_gauss    = 16
-r_leverage = 100
+r_leverage = 500
 cost_c = cauchy_bench(Ab, r_cauchy, r_gauss, r_leverage, repeat=100)
 rel_err(cost0, cost_c)
 
-# # exponential
+# exponential
 r_exp      = 64
 r_gauss    = 16
-r_leverage = 100
+r_leverage = 500
 cost_e = exponential_bench(Ab, r_exp, r_gauss, r_leverage, repeat=100)
 rel_err(cost0, cost_e)
