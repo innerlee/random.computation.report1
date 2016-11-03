@@ -9,7 +9,7 @@ include("l1.cauchy.jl")
 include("l1.exponential.jl")
 
 # config
-MAX_SAMPLE = 2000
+MAX_SAMPLE = 10000
 
 # load data
 data = load("../output/data.jld");
@@ -24,21 +24,24 @@ Ab = hcat(A, b)
 # truncate data
 MAX_SAMPLE = min(MAX_SAMPLE, size(A, 1))
 Ab         = Ab[1:MAX_SAMPLE, :]
-seed_data  = Ab[1:10, :]
 
 n, d = size(Ab)
 
-# # baseline
-# baseline_bench(seed_data, verbose=false)
-# baseline_bench(Ab)
+rel_err(base, comp) = println("relative err: $(round((comp / base - 1) * 100, 2))%")
+
+# baseline
+cost0, _, _ = baseline_bench(Ab)
 
 # cauchy
 r_cauchy   = 64
 r_gauss    = 16
 r_leverage = 100
-# cauchy_bench(seed_data, verbose=false)
-cauchy_bench(Ab, r_cauchy, r_gauss, r_leverage)
+cost_c = cauchy_bench(Ab, r_cauchy, r_gauss, r_leverage, repeat=100)
+rel_err(cost0, cost_c)
 
 # # exponential
-# exponential_bench(seed_data, verbose=false)
-# exponential_bench(Ab)
+r_exp      = 64
+r_gauss    = 16
+r_leverage = 100
+cost_e = exponential_bench(Ab, r_exp, r_gauss, r_leverage, repeat=100)
+rel_err(cost0, cost_e)
