@@ -7,6 +7,10 @@
 * ``src/hw2.jl``
 * ``src/l1.solver.jl``
 
+### raw data
+* ``result/l1.100.txt``
+* ``result/l1.500.txt``
+
 # hw1
 
 * details see [report.pdf](report.pdf).
