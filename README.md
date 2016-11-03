@@ -1,15 +1,17 @@
 # hw2
 
 ### report
-* hw2.pdf
+* [hw2.pdf](hw2.pdf)
 
 ### codes
-* ``src/hw2.jl``
-* ``src/l1.solver.jl``
+* [``src/hw2.jl``](src/hw2.jl)
+* [``src/l1.solver.jl``](src/l1.solver.jl)
 
 ### raw data
-* ``result/l1.100.txt``
-* ``result/l1.500.txt``
+* [``result/l1.100.txt``](result/l1.100.txt)
+* [``result/l1.500.txt``](result/l1.500.txt)
+
+----
 
 # hw1
 
