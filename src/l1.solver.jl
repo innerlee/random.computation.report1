@@ -1,5 +1,32 @@
 
 """
+    Solve L1 regression by LP.
+    Input:
+        Ab: concate of A and b
+    Output:
+        f : optimal objective value
+        x : optimal point
+"""
+function l1_solver(Ab)
+    M, N = size(Ab)
+
+    # baseline, LP solver by JuMP
+    m = Model()
+    @variable(m, t[1:M] >= 0 )
+    @variable(m, x[1:N])
+
+    @objective(m, Min, sum(t))
+
+    @constraint(m, Ab * x .<= t )
+    @constraint(m, -t .<= Ab * x )
+    @constraint(m, x[N] == -1 )
+
+    solve(m) == :Optimal || error("no solution found!")
+
+    (getobjectivevalue(m) / M, getvalue(x))
+end
+
+"""
     Solve L1 regression by sketching.
     Input:
         Ab: concate of A and b
@@ -14,28 +41,25 @@
 function l1_sketch_solver(Ab, sk, t, r)
     n, d = size(Ab)
 
-    # cauchy / exponential sketching
+    # get p
     tic()
+        # cauchy / exponential sketching
         skSA = sk(Ab)
         _, R = qr(skSA)
 
         # gaussian sketching and p
         G = randn(d, t) / sqrt(t)
         p = sum(abs(Ab * (inv(R) * G)), 2)
-        p = p / sum(p)
+        p = min(1, r * p / sum(p))
     time_p = toq()
 
     # leverage score, sample r rows
     tic()
-        cols = (1:n)[rand(n) .<= r * p]
-        c = length(cols)
+        cols = (1:n)[rand(n) .<= p]
+        c    = length(cols)
         Ω    = sparse(1:c, cols, 1, c, n)
-        D    = spdiagm(1 ./ min(1, p[cols] * r))
-        # D    = spzeros(c, c)
-        # for j = 1:c
-        #     D[j, j] = 1 / min(1, p[cols[j]] * r)
-        # end
-        SAb = D * Ω * Ab
+        D    = spdiagm(1 ./ p[cols])
+        SAb  = D * Ω * Ab
     time_leverage = toq()
 
     # solve the tiny problem
@@ -60,8 +84,28 @@ cauchy(A, r) = rand(Cauchy(), r, size(A, 1)) * A
 function exponential(A, r)
     n, d = size(A)
     S = sparse(rand(1:r, n), 1:n, rand([1,-1], n), r, n)
-    D = spdiagm(rand(Exponential(), n))
-    S * D * Ab
+    D = spdiagm(1 ./ rand(Exponential(), n))
+    S * D * A
+end
+
+###########################################################################
+
+"""
+    baseline benchmark
+"""
+function baseline_bench(Ab; verbose=true)
+    tic()
+    f, x = l1_solver(Ab)
+    t = toq()
+
+    if verbose
+        println("\n== baseline: slove by LP ")
+        println("time used: ", t)
+        println("objective value: ", f)
+        println("x = ", x)
+    end
+
+    f
 end
 
 """

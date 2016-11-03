@@ -4,9 +4,7 @@ using JuMP
 using StatsBase
 using Distributions
 
-include("l1.baseline.jl")
-include("l1.cauchy.jl")
-include("l1.exponential.jl")
+include("l1.solver.jl")
 
 # config
 MAX_SAMPLE = 10000
@@ -18,19 +16,17 @@ b    = data["b"]
 
 # normalize data
 A  = (A .- mean(A, 1)) ./ std(A, 1)
-b  = (b .- mean(b, 1)) ./ std(b, 1)
+# b  = (b .- mean(b, 1)) ./ std(b, 1)
 Ab = hcat(A, b)
 
 # truncate data
 MAX_SAMPLE = min(MAX_SAMPLE, size(A, 1))
 Ab         = Ab[1:MAX_SAMPLE, :]
 
-n, d = size(Ab)
-
 rel_err(base, comp) = println("relative err: $(round((comp / base - 1) * 100, 2))%")
 
 # baseline
-cost0, _, _ = baseline_bench(Ab)
+cost0 = baseline_bench(Ab)
 
 # cauchy
 r_cauchy   = 64
