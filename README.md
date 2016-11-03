@@ -1,3 +1,12 @@
+# hw2
+
+### report
+* hw2.pdf
+
+### codes
+* ``src/hw2.jl``
+* ``src/l1.solver.jl``
+
 # hw1
 
 * details see [report.pdf](report.pdf).
