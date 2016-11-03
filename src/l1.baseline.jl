@@ -23,7 +23,7 @@ function l1_solver(Ab)
 
     solve(m) == :Optimal || error("no solution found!")
 
-    (getobjectivevalue(m) / M, getvalue(x)[1:N-1])
+    (getobjectivevalue(m) / M, getvalue(x))
 end
 
 """

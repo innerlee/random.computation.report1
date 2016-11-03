@@ -1,6 +1,7 @@
 # testing code for hw2
 using JLD
 using JuMP
+using StatsBase
 
 include("l1.baseline.jl")
 include("l1.cauchy.jl")
