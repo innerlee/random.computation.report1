@@ -1,48 +1,58 @@
 \section{Sketching}
 
-Let $n=2741220$ and $d=21$, which are taken
-from dimensions of data in Equation~\eqref{eq:data}.
-Set $\varepsilon=0.1$ and $\delta=0.9$ in the following.
-We gather all the testing results in Table~\ref{tab:grand}.
+Let $n=20000$ and $d=21$ as in our dataset.
+The general framework contains three steps:
+\begin{enumerate}
+    \item L1-norm subspace embedding.
+        This step can use \emph{Cauchy} or \emph{Exponential} mehtod.
+        The output is a probability vector $p$.
+        There are two parameters in this step.
+        The first is the number of rows in \emph{Cauchy} and \emph{Exponential}
+        subspace embedding.
+        Some guidance on chosing this number are
+        $\mathcal{O}(d\log(d))$ as in~\cite[Theorem 36]{woodruff2014sketching}
+        and $d \cdot \text{poly}(\log(d))$
+        as in~\cite[Theorem 41]{woodruff2014sketching}.
+        We fix this number to $21\times \log(21)\approx64$.
+        The other is the columns of Gaussian sketching which is used for
+        accelerating algorithm.
+        We fix it to be 16.
+    \item Sampling.
+        This step is similar like the Leverage score sketching.
+        After this step, we get a shirinked sized problem.
+        The number in sampling is controlled by parameter $r$.
+        We tested $r=100$ and $r=500$ for reference.
+    \item Solving small sized problem.
+        We use LP solver to get the solution.
+\end{enumerate}
+Testing results are shown in Table~\ref{tab:grand}.
 
 \begin{table}[htb]
   \setlength{\tabcolsep}{2.6pt}
   \caption{The performances of different Sketching techniques.
-    other than the min loss, all are average values of repeats.
-    \emph{prep} and \emph{app} are time spent on sketching and
-    on solving the shrinked sized least square problem, respectively.
-    ref-$k$ is the reference value for $k$.}
+  $r$ is the parameter in step~2.
+  time-$i$ is the average time spent on step~$i$.
+    }
   \label{tab:grand}
   \centering
   {\small
-  \begin{tabular}{lllllllllll}
+  \begin{tabular}{lllllllllllll}
     \toprule
-    algorithm & repeat & ref-$k$ & $k$ & prep (s) & app (ms) & min loss & median loss & max loss & std loss & mean loss \\
+    algorithm & repeat & $r$ & time1 & time2 & time3 & time & min loss & max loss & median loss & mean loss & std loss & rel err \\
     \midrule
-    Baseline & 10 & - & - & 0 & 190 & 15090.7 & 15090.7 & 15090.7 & 0 & 15090.7 \\
-    Gaussian & 100 & 2432 & 10 & 0.76 & 0.3 & 20479.8 & 76514.7 & 1268090 & 177191.0 & 126311 \\
-    Gaussian & 100 & 2432 & 100 & 7.44 & 9.7 & 16080.5 & 16983.8 & 18631.3 & 583.3 & 17059.5 \\
-    PHD & 100 & 37234 & 100 & 3.76 & 0.4 & 15927.6 & 16977.5 & 19309.7 & 635.3 & 16999.5 \\
-    PHD & 100 & 37234 & 1000 & 3.72 & 1.1 & 15159.7 & 15252.5 & 15364.3 & 45.4 & 15248.1 \\
-    Count & 100 & 340198 & 1000 & 1.17 & 0.4 & 15157.6 & 15240.8 & 15397.1 & 43.0 & 15246.7 \\
-    Count & 100 & 340198 & 10000 & 1.20 & 1.1 & 15096.8 & 15105.3 & 15122.3 & 5.3 & 15106.5 \\
-    Leverage & 100 & 1826573 & 10000 & 2.81 & 1.3 & 15093.7 & 15096.8 & 15105.4 & 2.2 & 15097.3 \\
-    Leverage & 100 & 1826573 & 100000 & 4.89 & 9.4 & 15091.0 & 15091.3 & 15092.1 & 0.2 & 15091.4 \\
+    Baseline & 1 & - & - & - & - & 97.30 & 3.428 & 3.428 & 3.428 & 3.428 & - & - \\
+    Cauchy & 100 & 100 & 0.129 & 0.014 & 0.010 & 0.154 & 3.5507 & 4.7928 & 3.9607 & 3.9855 & 0.2484 & 3.56\% \\
+    Cauchy & 100 & 500 & 0.131 & 0.014 & 0.125 & 0.272 & 3.4497 & 3.5875 & 3.5023 & 3.5045 & 0.0259 & 0.62\% \\
+    Exponential & 100 & 100 & 0.012 &  0.002 & 0.011 & 0.025 & 3.6121 & 4.6369 & 3.8575 & 3.9185 & 0.2231 & 5.35\% \\
+    Exponential & 100 & 500 & 0.014 & 0.002 & 0.129 & 0.146 & 3.4486 & 3.5924 & 3.4934 & 3.4971 & 0.0251 & 0.58\% \\
     \bottomrule
   \end{tabular}
   }
 \end{table}
 
 %
-\subsection{Gaussian}
-By Theorem~6 in the text book article~\cite{woodruff2014sketching},
-\begin{equation}
-    k=\Theta((d+\log(1/\delta))\varepsilon^{-2}),
-\end{equation}
-$k$ is a multiple of $(21+log(10))\times100\approx2432$.
-This is too large for real computation, so we set $k=10$ and $k=100$.
-Results are shown in Table~\ref{tab:grand}.
-The minimum point when $k=100$ is
+\subsection{Cauchy}
+The minimum point when $r=500$ is
 {
 \def\OldComma{,}
 \catcode`\,=13
@@ -53,29 +63,13 @@ The minimum point when $k=100$ is
 	\OldComma%
 	\fi%
 }%
-$x^* = (0.292,0.162,0.83,-1.478,0.693,0.034,-0.851,1.482,-0.614,1.286,-29.447,-12.258,37.858,0.534,5.043,-5.779,-0.274,-0.157,-0.212,0.753,-0.234)$
-with loss $f(x^*) = 16080.5$.
+$x^* = (0.657501,0.0776499,-0.133653,-0.0633284,-0.876821,-0.759774,1.41801,0.980646,0.0688024,-0.0893941,-0.221192,0.0627549,0.0966104,0.0311747,0.359389,0.235925,-0.00986104,0.144246,-0.0530562,-0.0743144,-0.19942)$
+with loss $f(x^*) = 3.4497$.
 }
 
 %
-\subsection{PHD}
-
-$P$ is used for pick $k$ rows from matrix on the right hand side.
-$H$ is Hardamard matrix and $D$ a diagonal matrix.
-Since size of $H$ is required to be a power of 2,
-we pad the the $n$ dimensional vectors to the
-smallest power of 2 that is larger than $n$.
-We use \emph{Hadamard.jl} package in Julia for the computation
-of the Hadamard transform.
-By Theorem~7, the selected row number
-\begin{equation}
-    k=\Omega\big((\log(d))(\sqrt{d}+\sqrt{\log(n)})^2\varepsilon^{-2}\big).
-\end{equation}
-A reference number for $k$ is
-$\log(21)\times(\sqrt{21}+\sqrt{\log(2741220)})^2\times100\approx37234$.
-This is too large for computation, thus we set $k=1000$ and $k=1000$.
-Results are shown in Table~\ref{tab:grand}.
-The minimum point when $k=1000$ is
+\subsection{Exponential}
+The minimum point when $r=500$ is
 {
 \def\OldComma{,}
 \catcode`\,=13
@@ -86,65 +80,6 @@ The minimum point when $k=1000$ is
 	\OldComma%
 	\fi%
 }%
-$x^* = (0.221,0.002,0.021,0.193,-0.034,-0.048,0.027,-0.168,0.24,-1.341,-4.14,-9.779,10.611,-0.129,-0.359,1.604,-0.894,-0.035,-0.121,0.28,-0.065)$
-with loss $f(x^*) = 15159.7$.
+$x^* = (0.493382,0.42278,0.242891,-0.476517,-0.753511,-0.43696,0.680251,0.761099,0.196092,-0.137095,-0.35945,0.181037,-0.033585,-0.037471,0.506696,0.282556,-0.221777,0.00231164,0.0114419,-0.144334,-0.0618985,-1.0)$
+with loss $f(x^*) = 3.4486$.
 }
-
-%
-\subsection{Count Sketch}
-By Theorem~8, the $k$ (we use $k$ here for consistency,
-$r$ is used in the article) is,
-\begin{equation}
-    k=\mathcal{O}\big(d^2\text{poly}(\log(d/\varepsilon))\varepsilon^{-2}\big).
-\end{equation}
-A reference number for $k$ is
-$21^2\times\log(21/0.1)\times100\approx 340198$.
-This is too large for computation, thus we set $k=1000$ and $k=10000$.
-Results are shown in Table~\ref{tab:grand}.
-The minimum point when $k=10000$ is
-{
-\def\OldComma{,}
-\catcode`\,=13
-\def,{%
-	\ifmmode%
-	\OldComma\discretionary{}{}{}%
-	\else%
-	\OldComma%
-	\fi%
-}%
-$x^* = (0.179,-0.007,0.004,0.036,0.09,0.007,-0.09,0.083,0.081,-0.871,-1.128,4.666,-6.164,0.127,0.214,-0.183,-0.245,0.011,0.004,0.02,0.002)$
-with loss $f(x^*) = 15096.8$.
-}
-
-\subsection{Leverage Score}
-We use the procedure described by Definition~16.
-For simplicity, we did not implement the fancier one
-as in Theorem~19.
-In this case, $q$ is selected as $p$
-and $\beta=1$.
-By Theorem~17, the $k$ (we use $k$ here for consistency,
-$s$ is used in the article,
-and the $k$ of the article correspond to $d$ here) is,
-\begin{equation}
-    k>144d\ln(2d/\delta)\beta^{-1}\varepsilon^{-2}.
-\end{equation}
-A reference number for $k$ is
-$144\times 21 \times \ln(2\times 21 \times 10)\times100\approx 1826573$.
-This is too large for computation, thus we set $k=10000$ and $k=100000$.
-Results are shown in Table~\ref{tab:grand}.
-The minimum point when $k=10000$ is
-{
-\def\OldComma{,}
-\catcode`\,=13
-\def,{%
-	\ifmmode%
-	\OldComma\discretionary{}{}{}%
-	\else%
-	\OldComma%
-	\fi%
-}%
-$x^* = (0.193,-0.021,-0.004,0.031,0.128,-0.024,-0.078,0.086,0.078,-0.099,-0.079,-2.097,-1.301,0.015,0.066,0.091,-0.136,0.001,0.028,0.046,-0.034)$
-with loss $f(x^*) = 15091.0$.
-}
-This is the best result in our experiment.
-Especially, notice that both $x^*$ and $f(x^*)$ are close to the ground truth.

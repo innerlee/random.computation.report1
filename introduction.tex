@@ -2,19 +2,23 @@
 \label{sec:intro}
 
 This report use sketching methods to deal with the
-least square problem which minimizes
+least absolute deviation regression problem which minimizes
 \begin{equation} \label{eq:ls}
-    f(x) = \|Ax-b\|_2,
+    f(x) = \frac{1}{N}\|Ax-b\|_1,
 \end{equation}
-where $A\in\real^{n\times d}$, $b\in\real^n$, and $x\in\real^d$.
-The four sketching methods are
-\emph{Gaussian}, \emph{PHD}, \emph{Count Sketch},
-and \emph{Leverage Score}.
+where $N$ is the number of samples,
+$A\in\real^{n\times d}$, $b\in\real^n$,
+and $x\in\real^d$.
+The two sketching methods are
+\emph{Cauchy}
+and \emph{Exponential}.
 
 \subsection{Dataset}
 
-We use the \emph{how much did it rain ii} \cite{rain, Lakshmanan16}
-dataset from \emph{kaggle.com} for the analysis of different sketching methods.
+Same as {\it HW1},
+we use the  \emph{how much did it rain ii} \cite{rain, Lakshmanan16}
+dataset from \emph{kaggle.com} as our benchmark.
+The aim of the dataset is to predict the amount of raining.
 The original dataset contains 13,765,201 training samples
 with 23 features and 1 prediction value.
 The following description was extracted from web page \cite{rain}.
@@ -38,7 +42,7 @@ Maximum reflectivity in the vertical column above gauge.  In dBZ.
 \end{description}
 
 Since it contains null values and outliers,
-we will do a preprocess and only use a subset of samples.
+we will do some preprocesses.
 All the experiments were conducted on a machine
 that has an 16-core Intel Xeon E5-2637 v2 CPU at 3.5GHz,
 and 256G memory.
@@ -57,38 +61,29 @@ get data matrices
     A_0 \in \real^{2769088\times 21}, \,
     b_0\in\real^{2769088}.
 \end{equation}
-The distribution of these inputs was shown in Figure~\ref{fig:box}.
-\begin{figure}[htb]
-	\centering
-	\includegraphics[height=6cm]{fig/box_a_0.png}
-	\includegraphics[height=6cm]{fig/box_b_0.png}
-	\caption{\small
-		Left, box plot for columns of $A_0$.
-        Right, that for $b_0$.
-        We can see $b_0$ contains outliers.}
-	\label{fig:box}
-\end{figure}
 
-Firstly, direct compute the least square problem \eqref{eq:ls}
-by equation
-\begin{equation} \label{eq:psudo}
-    x_0^*=(A_0^TA_0)^{-1}A_0^Tb_0.
-\end{equation}
-We get
-$$
-    x_0^*=(0.758, 0.046, 0.218, \dots, -0.035, -0.101)
-$$
-with average loss $f(x_0^*)/\sqrt{n} = 156.1$ in $0.19$ seconds.
-Compared to $\text{mean}(b_0)=12.2$, the mean value of $b_0$,
-the average loss seems too large due to outliers.
 The $99$-th percentile of prediction values in $b_0$ is $144.0$.
 We then use samples that have prediction values less than $144.0$
 and get new data
 \begin{equation} \label{eq:data}
-    A \in \real^{2741220\times 21}, \,
-    b\in\real^{2741220}.
+    A_1 \in \real^{2741220\times 21}, \,
+    b_1\in\real^{2741220}.
 \end{equation}
-Directly compute $x^*$ using Equation~\eqref{eq:psudo} again, we can get
+
+Since the LP solver for getting the exact solution cannot process large scale
+data in a reasonable time,
+we then truncate the matrix to 20,000 rows.
+As suggested by instruction,
+we normalize matrix $A$ by subtracting mean and divide by std column-wisely.
+$b$ is \emph{not} normalized.
+The final dataset we use is
+\begin{equation} \label{eq:data}
+    A \in \real^{20000\times 21}, \,
+    b\in\real^{20000}.
+\end{equation}
+
+Solving problem~\eqref{eq:ls} by LP solver,
+we have
 {
 \def\OldComma{,}
 \catcode`\,=13
@@ -99,16 +94,9 @@ Directly compute $x^*$ using Equation~\eqref{eq:psudo} again, we can get
 	\OldComma%
 	\fi%
 }%
-$x^* = (0.189,-0.012,-0.008,0.022,0.13,-0.029,-0.063,0.081,0.076,0.061,0.222,-2.724,-1
-.046,0.015,0.082,0.092,-0.138,0.004,0.027,0.042,-0.04)$
+$x^* = (0.637049,-0.0401072,0.117485,-0.196894,-0.375371,-0.267876,0.855095,0.509979,
+0.146945,0.0406474,-0.306016,0.0689336,-0.0244424,0.0619177,0.202188,0.395404,-0.183876,
+-0.0417801,0.0202723,-0.00508027,-0.125157)$
 }
-with loss $f(x^*) = 15090.7$ in $0.19$ seconds.
-This makes more sense because
-the average loss
-$f(x_0^*)/\sqrt{n} = 9.11$
-is comparable to stats like
-$\text{mean}(b)=4.24$,
-$\text{std}(b) = 9.30$,
-$\text{minimum}(b) = 0.01$, and
-$\text{maximum}(b) = 142.2$.
-And this serves as the baseline for our later discussion.
+with loss $f(x^*) = 3.429$ in $97.3$ seconds.
+This serves as the baseline for our later discussion.

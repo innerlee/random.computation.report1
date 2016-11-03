@@ -3,17 +3,18 @@
 From the experiment results,
 we can see that
 \begin{itemize}
-    \item The preparation time for the sketching is large in
-    experiments. Efforts should be made to reduce this time.
-    The second step of solving the smaller sized problem
-    take negligible amount of time if $k$ is small.
-    \item The performance of the four sketching are
-    Leverage Score, Count Sketch, PHD, and Gaussian
-    in decreasing order.
-    \item The loss can be very near to the ground truth.
-    Especially for the Leverage Score method.
-    \item When $k$ is very large, \eg $100,000$,
-    the std of loss is very small.
-    This means we can get a very good guess stably.
+    \item Solving the problem using LP requires lots of time.
+        and it is infeasible for large scale problems.
+        In our experiments, we were forced to truncate the dataset
+        to a small scale (20000 rows) due to this limitation.
+    \item The preparation time for the sketching is negligible in
+        experiments.
+        This is different from HW1.
+    \item The performances of the two sketching methods are similar.
+        Increasing the number of rows sampled helps imporve performance.
+        We can get a reletive error of $0.58\%$
+        by sampling $2.5\%$ of all rows.
+    \item Time consumption of sketching methods is extremely small.
+        This makes it suitable for large scale dataset.
 \end{itemize}
-Therefore sketching methods is promising in large scale problems.
+Therefore sketching methods is very useful for large scale problems.
