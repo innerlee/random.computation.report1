@@ -1,9 +1,12 @@
-
 \section{Baseline}
 
 We did a svd directly to the full version
 (\ie, none sparse algorithms used) of the matrix,
-which took 21,403 seconds, about $6$ hours.
+which took
+\begin{equation}
+    t_0=21403
+\end{equation}
+ seconds, about $6$ hours.
 The eigenvalues was shown in Figure~\ref{fig:eig}.
 We can see that the dominating values only take a small proportion.
 For example,
@@ -32,4 +35,36 @@ in Figure~\ref{fig:eig}.
           We can see a small portion of very large values.
         \textbf{Right}: Detailed distribution for large eigenvalues.}
 	\label{fig:eig}
+\end{figure}
+
+To find a gook rank $k$,
+we plot the curve of error energy (squared Frobenius norm) v.s. rank $k$
+in Figure~\ref{fig:rank}.
+Since there are quick methods (like sparse svd function \textit{svds()} in Julia)
+computing part of the svd given rank $k$,
+The running time of svds() is shown in Figure~\ref{fig:rank}.
+We can see that when $k=300$,
+the relative error energy is around 40\% and
+the running time for svds in this setting is
+\begin{equation}
+    t_1=560
+\end{equation}
+seconds.
+We will set
+\begin{equation}
+    k=300
+\end{equation}
+in the following experiments since it captures most of the energy
+as well as keeps a relative small rank at the same time.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.48\textwidth]{fig/ranks.pdf}
+    \hskip 0.2cm
+	\includegraphics[width=0.48\textwidth]{fig/ranks_time.pdf}
+	\caption{\small
+  		\textbf{Left}: Relative errors of the best rank $k$ approximation to $A$
+          which are measured in the Frobenius norm squared.
+        \textbf{Right}: The running time of sparse svd, svds(), in different $k$.}
+	\label{fig:rank}
 \end{figure}

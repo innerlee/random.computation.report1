@@ -12,7 +12,8 @@
         "CUHK",
         "Frobenius",
         "GroupLens",
-        "Xeon"
+        "Xeon",
+        "svds"
     ],
     "documentTypes": [
         "markdown",
