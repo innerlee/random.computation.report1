@@ -76,3 +76,88 @@ function bench_k(krange=10:10:100)
         println("||A-A_k||_F = ", round(dif,1))
     end
 end
+
+"""
+    sketch(A, fA; k=128, t=256)
+
+Arguments
+    A : sparse A
+    fA: full A
+    k : rank
+    t : sketch dim
+
+Returns
+    ((uk, sk, vk), (time_sketch, time_tiny_problem))
+
+Use count sketch to reduce the column space.
+"""
+function sketch(A, fA; k=128, t=256)
+    # count sketch, reduce columns
+    tic()
+        # 138493 × 26744
+        n = size(A, 1)
+        # s × 138493
+        S = sparse(rand(1:t, n), 1:n, rand([1,-1], n))
+        # s × 26744
+        SA = full(S * A)
+    time_sketch = toq()
+    tic()
+        Q, R = qr(SA')
+        # full A is faster in multiplication
+        AQ = fA * Q
+        u, s, v = svd(AQ)
+        uk = u[:, 1:k]
+        sk = s[1:k]
+        vk = v[:, 1:k]
+        usv = (uk * spdiagm(sk)) * (vk' * Q')
+    time_tiny_problem = toq()
+    err = vecnorm(fA-usv)
+    ((uk, sk, vk), err, (time_sketch, time_tiny_problem))
+end
+
+"""
+    bench_sketch(repeat=1, tt=[256])
+
+Arguments
+    repeat: how many repeats for sketch
+    tt    : collection of columns that sketch reduces to
+
+sketch benchmark.
+"""
+function bench_sketch(repeat=1, tt=[256])
+    # 138493 × 26744
+    A = load_movielens()'
+    fA = full(A)
+    t0 = 111.4
+    e0 = 11622.2
+    for t in tt
+        println("> will reduce A with size $(size(A)) to $t rows")
+        results = []
+        for i = 1:repeat
+            r = sketch(A, fA, t=t)
+            push!(results, r)
+        end
+
+        # usv               = [r[1]    for r in results]
+        err               = [r[2]    for r in results]
+        time_sketch       = [r[3][1] for r in results]
+        time_tiny_problem = [r[3][2] for r in results]
+
+        println("repeat = ", repeat)
+        println("mean time spent = ", mean(time_sketch + time_tiny_problem))
+        println("          ratio = ", mean(time_sketch + time_tiny_problem) / t0)
+        println("    sketch: ", mean(time_sketch))
+        println("    tiny problem: ", mean(time_tiny_problem))
+        println("min/max/median/mean/std err (frob norm): ", round([
+            minimum(err), maximum(err), median(err), mean(err), std(err)
+            ], 4))
+        println("min err (frob norm) = ", minimum(err))
+        println("              ratio = ", minimum(err) / e0)
+    end
+end
+
+## main
+REPEAT = 1
+TT     = [256, 512, 1024]
+
+bench_sketch(100, TT)
