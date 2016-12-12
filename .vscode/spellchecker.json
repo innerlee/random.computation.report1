@@ -1,0 +1,36 @@
+{
+    "language": "en_US",
+    "ignoreWordsList": [
+        "natbib",
+        "nonatbib",
+        "MovieLens",
+        "movielens",
+        "varepsilon",
+        "hyperlinks",
+        "microtypography",
+        "Zhizhong",
+        "CUHK"
+    ],
+    "documentTypes": [
+        "markdown",
+        "latex",
+        "plaintext"
+    ],
+    "ignoreRegExp": [
+        "/\\\\\\\\\\\\w+/g",
+        "/fig:\\\\w+/g",
+        "/eq:\\\\w+/g",
+        "/tab:\\\\w+/g",
+        "/\\\\w+.png/g",
+        "/\\\\w+.jpg/g",
+        "/\\\\{\\\\w+\\\\}/g",
+        "/\\\\[\\\\w+\\\\]/g",
+        "/\\\\(\\\\w+\\\\)/g",
+        "/\\\\w+=/g",
+        "/\\\\w+.pdf/g"
+    ],
+    "ignoreFileExtensions": [
+        ".bib"
+    ],
+    "checkInterval": 5000
+}

@@ -1,6 +1,24 @@
 \section{Introduction}
 \label{sec:intro}
 
+In this report, we deal with the low-rank approximation problem.
+Given an $n\times d$ matrix, $A$,
+we would like to find a matrix $\tilde{A}_k$,
+such that
+\begin{equation}
+    \| A - \tilde{A}_k \| \le (1+\varepsilon) \| A - A_k \|,
+\end{equation}
+where $A_k$ is the best rank-$k$ approximation oto $A$,
+and $\tilde{A}_k$ has rank $k$.
+The best approximation $A_k$ can be computed by a svd operation.
+
 \subsection{Dataset}
 
 MovieLens 20M dataset~\cite{movielens}.
+
+\subsection{Experiment Setting}
+
+\section{Baseline}
+
+We did svd directly to the full version of the matrix,
+which took 21403 seconds.
