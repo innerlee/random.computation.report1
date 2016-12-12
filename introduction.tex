@@ -2,7 +2,7 @@
 \label{sec:intro}
 
 In this report, we deal with the low-rank approximation problem.
-Given an $n\times d$ matrix, $A$,
+Given an $n\times d$ matrix $A$,
 we would like to find a matrix $\tilde{A}_k$,
 such that
 \begin{equation}
@@ -11,14 +11,32 @@ such that
 where $A_k$ is the best rank-$k$ approximation oto $A$,
 and $\tilde{A}_k$ has rank $k$.
 The best approximation $A_k$ can be computed by a svd operation.
+However, the time required would be huge.
+We tested several approximation methods using the sketching technique,
+both in the Frobenius norm and the operator norm settings.
 
 \subsection{Dataset}
 
-MovieLens 20M dataset~\cite{movielens}.
+We use the MovieLens 20M dataset~\cite{lens} as benchmark,
+which can be downloaded at~\cite{movielens}.
+It contains 20,000,263 5-star ratings on 26744 movies from 138493 users.
+This is a typical dataset for the study of recommendation systems.
+The low rank nature for the problem is that the contributing factors
+for users' preference on a movie is not that much.
+Factors like genre, director, actors, etc might dominate one's selection.
+The data is also sparse
+since the number of movies that a user can reach is limited.
+We put all ratings in a sparse matrix
+\begin{equation}
+    A \in \real^{26744\times 138493},
+\end{equation}
+with rows be different movies and columns represent users.
+There are 20,000,263 none-zero entries,
+and all elements range in $[0, 5]$.
 
 \subsection{Experiment Setting}
 
-\section{Baseline}
-
-We did svd directly to the full version of the matrix,
-which took 21403 seconds.
+All experiments were conducted on a machine that contains an 16-core
+Intel Xeon E5-2637 v2 CPU at 3.5GHz, and 256G memory.
+Codes were implemented using the Julia language and are available at
+https://github.com/innerlee/random.computation.report1.

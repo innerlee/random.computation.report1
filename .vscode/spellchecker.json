@@ -9,7 +9,10 @@
         "hyperlinks",
         "microtypography",
         "Zhizhong",
-        "CUHK"
+        "CUHK",
+        "Frobenius",
+        "GroupLens",
+        "Xeon"
     ],
     "documentTypes": [
         "markdown",
