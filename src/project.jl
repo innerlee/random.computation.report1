@@ -179,7 +179,7 @@ Arguments
 sketch benchmark for the operator norm.
 """
 function bench_sub_power(repeat=1, qq=[256])
-    # 138493 × 26744
+    # 138493 × 26744, did a transpose for this shape.
     A = load_movielens()'
     fA = full(A)
     t0 = 111.4

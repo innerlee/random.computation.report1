@@ -13,7 +13,10 @@
         "Frobenius",
         "GroupLens",
         "Xeon",
-        "svds"
+        "svds",
+        "frob",
+        "time1",
+        "time2"
     ],
     "documentTypes": [
         "markdown",

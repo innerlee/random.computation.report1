@@ -1,4 +1,45 @@
 \section{Sketching}
 
+\subsection{Frobenius norm}
 For simplicity, we use sparse embedding, \ie the count sketch
 to find a subspace that may contain a good low-rank approximation to $A$.
+The general steps in \textit{sketch\_frob()} function are:
+\begin{enumerate}
+    \item Input: matrix $A\in \real^{138493\times 26744}$,
+        rank $k=128$,
+        $t\in\{256, 512, 1024\}$ which is the the sketch dimension.
+    \item Construct count sketch matrix $S$.
+    \item Do qr decomposition $Q, R = \text{qr}((SA)^T)$.
+    \item Do svd $U, S, V = \text{svd}(AQ)$.
+    \item Truncate to $k$-dimensions $U_k$, $S_k$, and $V_k$.
+    \item Output: $\tilde{A}_k = U_k S_k V_k^T Q^T$.
+\end{enumerate}
+
+We divide the process into two phases and count the running time independently.
+The first phase is sketching and
+the second phase includes all the remaining steps
+which is to solve a reduced version of the problem.
+Results are shown in Table~\ref{tab:frob}
+
+\begin{table}[htb]
+  \setlength{\tabcolsep}{2.6pt}
+  \caption{The performances of different Sketching techniques.
+  $k$ is the rank used, $t$ is the dimension for sketching.
+  time-$i$ is the average time spent on phase~$i$.
+  Losses are measured by Frobenius norms.
+    }
+  \label{tab:frob}
+  \centering
+  {\small
+  \begin{tabular}{lllllllllllll}
+    \toprule
+    algorithm & repeat & $k$ & $t$ & time1\&2 & time & time ratio & min loss & max loss & mean loss & std loss & loss ratio \\
+    \midrule
+    Baseline & 1 & 128 & - & - & 111.4 & 1 & 11622.2 & 11622.2 & 11622.2 & - & 1 \\
+    Sketching & 100 & 128 & 256 & 2.7/13.8 & 16.5 & 0.148 & 12664.1 & 12693.7 & 12677.0 & 6.2537 & 1.089 \\
+    Sketching & 100 & 128 & 512 & 2.8/23.8 & 26.6 & 0.239 & 12282.5 & 12298.3 & 12290.0 & 3.1376 & 1.056 \\
+    Sketching & 100 & 128 & 1024 & 2.8/49.8 & 52.6 & 0.472 & 11971.6 & 11979.0 & 11974.7 & 1.314 & 1.030 \\
+    \bottomrule
+  \end{tabular}
+  }
+\end{table}
