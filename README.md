@@ -4,6 +4,12 @@
 
 [MovieLens 20M](http://grouplens.org/datasets/movielens/20m/)
 
+### report
+* [project.pdf](project.pdf)
+
+### codes
+* [``src/project.jl``](src/project.jl)
+
 ----
 
 # hw2
