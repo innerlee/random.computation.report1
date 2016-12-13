@@ -1,0 +1,27 @@
+> will reduce A with size (138493,26744) to 256 rows
+repeat = 100
+mean time spent = 16.51209971082
+          ratio = 0.14822351625511668
+    sketch: 2.70736931575
+    tiny problem: 13.80473039507
+min/max/median/mean/std err (frob norm): [12664.1,12693.7,12676.9,12677.0,6.2537]
+min err (frob norm) = 12664.135965453153
+              ratio = 1.0896504934911766
+> will reduce A with size (138493,26744) to 512 rows
+repeat = 100
+mean time spent = 26.69491993277
+          ratio = 0.23963123817567322
+    sketch: 2.8658542301399996
+    tiny problem: 23.82906570263
+min/max/median/mean/std err (frob norm): [12282.5,12298.3,12290.0,12290.0,3.1376]
+min err (frob norm) = 12282.537860137445
+              ratio = 1.0568169417268198
+> will reduce A with size (138493,26744) to 1024 rows
+repeat = 100
+mean time spent = 52.66653756263
+          ratio = 0.47276963700745056
+    sketch: 2.82032497897
+    tiny problem: 49.84621258366
+min/max/median/mean/std err (frob norm): [11971.6,11979.0,11974.5,11974.7,1.314]
+min err (frob norm) = 11971.633527065766
+              ratio = 1.0300660397399601

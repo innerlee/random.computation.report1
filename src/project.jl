@@ -47,19 +47,10 @@ Find a good rank k for approximation.
 
 Result:
 energy = 16453.6
-k   err     time(s)
-10  13408.6 9.7
-20  13003.8 19.1
-30  12754.6 25.7
-40  12571.0 35.1
-50  12419.6 45.1
-60  12287.5 57.5
-70  12169.3 73.9
-80  12060.1 81.0
-90  11958.8 106.7
-100 11863.5 131.8
-200 11101.7 241.4
-300 10506.1 559.8
+k   F err   2 err   time(s)
+100 11863.5  131.8
+200 11101.7  241.4
+300 10506.1  559.8
 """
 function bench_k(krange=10:10:100)
     u0, s0, v0 = load_svd()
@@ -73,12 +64,14 @@ function bench_k(krange=10:10:100)
         toc()
         # compute diff
         dif = vecnorm(s0[k+1:end])
+        dif2 = norm(full(A) - (ss[1].U * spdiagm(ss[1].S)) * ss[1].Vt')
         println("||A-A_k||_F = ", round(dif,1))
+        println("||A-A_k||_2 = ", round(dif2,1))
     end
 end
 
 """
-    sketch(A, fA; k=128, t=256)
+    sketch_frob(A, fA; k=128, t=256)
 
 Arguments
     A : sparse A
@@ -91,7 +84,7 @@ Returns
 
 Use count sketch to reduce the column space.
 """
-function sketch(A, fA; k=128, t=256)
+function sketch_frob(A, fA; k=128, t=256)
     # count sketch, reduce columns
     tic()
         # 138493 × 26744
@@ -116,15 +109,15 @@ function sketch(A, fA; k=128, t=256)
 end
 
 """
-    bench_sketch(repeat=1, tt=[256])
+    bench_sketch_frob(repeat=1, tt=[256])
 
 Arguments
     repeat: how many repeats for sketch
     tt    : collection of columns that sketch reduces to
 
-sketch benchmark.
+sketch benchmark for frobenius norm.
 """
-function bench_sketch(repeat=1, tt=[256])
+function bench_sketch_frob(repeat=1, tt=[256])
     # 138493 × 26744
     A = load_movielens()'
     fA = full(A)
@@ -134,7 +127,7 @@ function bench_sketch(repeat=1, tt=[256])
         println("> will reduce A with size $(size(A)) to $t rows")
         results = []
         for i = 1:repeat
-            r = sketch(A, fA, t=t)
+            r = sketch_frob(A, fA, t=t)
             push!(results, r)
         end
 
@@ -156,8 +149,70 @@ function bench_sketch(repeat=1, tt=[256])
     end
 end
 
+"""
+
+Subspace power method
+"""
+function sub_power(fA; k=128, q=10)
+    tic()
+        n = size(A, 2)
+        G = randn(n, k)
+        Y = fA * G
+        for i = 1:q
+            Y = fA' * Y
+            Y = fA * Y
+        end
+        Z, _ = qr(Y)
+    time_power = toq()
+    Aa = Z * (Z' * fA);
+    @time err = norm(fA - A)
+    (Z, err, time_power)
+end
+
+"""
+    bench_sub_power(repeat=1, qq=[256])
+
+Arguments
+    repeat: how many repeats for sketch
+    qq    : collection of numbers that power took
+
+sketch benchmark for the operator norm.
+"""
+function bench_sub_power(repeat=1, qq=[256])
+    # 138493 × 26744
+    A = load_movielens()'
+    fA = full(A)
+    t0 = 111.4
+    e0 = 11622.2
+    for t in qq
+        println("> will reduce A with size $(size(A)) to $t rows")
+        results = []
+        for i = 1:repeat
+            r = sub_power(A, fA, q=q)
+            push!(results, r)
+        end
+
+        # usv               = [r[1]    for r in results]
+        # err               = [r[2]    for r in results]
+        # time_sketch       = [r[3][1] for r in results]
+        # time_tiny_problem = [r[3][2] for r in results]
+
+        # println("repeat = ", repeat)
+        # println("mean time spent = ", mean(time_sketch + time_tiny_problem))
+        # println("          ratio = ", mean(time_sketch + time_tiny_problem) / t0)
+        # println("    sketch: ", mean(time_sketch))
+        # println("    tiny problem: ", mean(time_tiny_problem))
+        # println("min/max/median/mean/std err (frob norm): ", round([
+        #     minimum(err), maximum(err), median(err), mean(err), std(err)
+        #     ], 4))
+        # println("min err (frob norm) = ", minimum(err))
+        # println("              ratio = ", minimum(err) / e0)
+    end
+end
+
 ## main
-REPEAT = 1
+REPEAT = 100
 TT     = [256, 512, 1024]
 
-bench_sketch(100, TT)
+# bench_sketch_frob(REPEAT, TT)
+bench_sub_power(1, [256])
