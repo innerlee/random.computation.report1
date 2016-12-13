@@ -101,7 +101,7 @@ function bench_k(krange=10:10:100)
         toc()
         # compute diff
         dif = vecnorm(s0[k+1:end])
-        dif2 = maxeig(full(A) - (ss[1].U * spdiagm(ss[1].S)) * ss[1].Vt')
+        dif2 = s0[k+1]
         println("||A-A_k||_F = ", round(dif,1))
         println("||A-A_k||_2 = ", round(dif2,1))
     end
@@ -191,7 +191,7 @@ end
 
 Compute maximum eig of A by power method.
 """
-function maxeig(A; iter=16)
+function maxeig(A; iter=64)
     v = normalize(randn(size(A, 2)))
     for i = 1:iter
         v = normalize(A*v)
@@ -243,7 +243,7 @@ function bench_sub_power(repeat=1, qq=[4])
     A = load_movielens()'
     fA = full(A)
     t0 = 111.4
-    e0 = 424.3
+    e0 = 432.6
     for q in qq
         println("> will power $q times")
         results = []
@@ -270,8 +270,9 @@ end
 ## config
 REPEAT = 100
 TT     = [256, 512, 1024]
+REPEAT2 = 16
 QQ     = [4, 8, 16]
 
 # main
 bench_sketch_frob(REPEAT, TT)
-bench_sub_power(REPEAT, QQ)
+bench_sub_power(REPEAT2, QQ)
