@@ -191,7 +191,7 @@ end
 
 Compute maximum eig of A by power method.
 """
-function maxeig(A; iter=64)
+function maxeig(A; iter=81)
     v = normalize(randn(size(A, 2)))
     for i = 1:iter
         v = normalize(A*v)
@@ -211,14 +211,16 @@ Argumeents
 Low rank approx. w.r.t. operator norm by subspace power method.
 Error is evaluated by power method.
 """
-function sub_power(fA; k=128, q=4)
+function sub_power(fA, fAt; k=128, q=4)
     tic()
         n = size(fA, 2)
         G = randn(n, k)
         Y = fA * G
+        Y, _ = qr(Y)
         for i = 1:q
-            Y = fA' * Y
+            Y = fAt * Y
             Y = fA * Y
+            Y, _ = qr(Y)
         end
         Z, _ = qr(Y)
         # the approximation
@@ -240,8 +242,8 @@ sketch benchmark for the operator norm.
 """
 function bench_sub_power(repeat=1, qq=[4])
     # 138493 × 26744, did a transpose for this shape.
-    A = load_movielens()'
-    fA = full(A)
+    fA = full(load_movielens()')
+    fAt = fA'
     t0 = 111.4
     e0 = 432.6
     for q in qq
@@ -274,5 +276,5 @@ REPEAT2 = 16
 QQ     = [4, 8, 16]
 
 # main
-bench_sketch_frob(REPEAT, TT)
+# bench_sketch_frob(REPEAT, TT)
 bench_sub_power(REPEAT2, QQ)

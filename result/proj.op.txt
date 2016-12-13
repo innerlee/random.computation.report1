@@ -1,1 +1,21 @@
 > will power 4 times
+repeat = 16
+mean time spent = 53.375353196062505
+          ratio = 0.47913243443503145
+min/max/median/mean/std err (op norm): [460.036,470.994,467.678,466.675,3.0314]
+min err (op norm) = 460.0358742002662
+            ratio = 1.063420883495761
+> will power 8 times
+repeat = 16
+mean time spent = 88.460917816375
+          ratio = 0.7940836428758976
+min/max/median/mean/std err (op norm): [663.335,694.658,687.203,683.661,8.9849]
+min err (op norm) = 663.3351948422444
+            ratio = 1.5333684577952944
+> will power 16 times
+repeat = 16
+mean time spent = 165.14430364593747
+          ratio = 1.4824443774321137
+min/max/median/mean/std err (op norm): [1908.66,1960.72,1931.09,1933.36,15.1134]
+min err (op norm) = 1908.6605309853392
+            ratio = 4.412067801630465
