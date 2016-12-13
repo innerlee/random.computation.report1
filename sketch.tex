@@ -26,14 +26,14 @@ Results are shown in Table~\ref{tab:frob}.
   \caption{The performances of different sketching techniques.
   $k$ is the rank used, $t$ is the dimension for sketching.
   time-$i$ is the average time spent on phase~$i$.
-  Losses are measured by Frobenius norms.
+  Errors are measured by Frobenius norms.
     }
   \label{tab:frob}
   \centering
   {\small
-  \begin{tabular}{lllllllllllll}
+  \begin{tabular}{llllllllllll}
     \toprule
-    algorithm & repeat & $k$ & $t$ & time1\&2 & time & time ratio & min loss & max loss & mean loss & std loss & loss ratio \\
+    algorithm & repeat & $k$ & $t$ & time1\&2 & time & time ratio & min err & max err & mean err & std err & err ratio \\
     \midrule
     Baseline & 1 & 128 & - & - & 111.4 & 1 & 11622.2 & 11622.2 & 11622.2 & - & 1 \\
     Sketching & 100 & 128 & 256 & 2.7/13.8 & 16.5 & 0.148 & 12664.1 & 12693.7 & 12677.0 & 6.2537 & 1.089 \\
@@ -52,8 +52,35 @@ The general steps go like this,
     \item Input: matrix $A\in \real^{138493\times 26744}$,
     rank $k=128$, power $q\in\{10,20,40\}$.
     \item Generate random Gaussian matrix $G\in\real^{26744\times k}$.
-    \item $Y=A*G$.
+    \item $Y=AG$.
     \item repeat $Y = A^T Y, Y=AY$, for $q$ times.\
     \item Do qr factorization $Z, \_ = \text{qr}(Y)$.
     \item Output: $\tilde{A}_k = Z Z^T A$.
 \end{enumerate}
+
+The results are shown in Table~\ref{tab:op}.
+Since the running time and evaluation time for each run is too slow,
+we reduced the repeat number to 16.
+
+\begin{table}[htb]
+  \setlength{\tabcolsep}{2.6pt}
+  \caption{The performances of subspace power method.
+  $k$ is the rank used, $q$ is the power used.
+  time is the in seconds and
+  errors are measured by operator norms.
+    }
+  \label{tab:op}
+  \centering
+  {\small
+  \begin{tabular}{lllllllllll}
+    \toprule
+    algorithm & repeat & $k$ & $q$ & time & time ratio & min err & max err & mean err & std err & err ratio \\
+    \midrule
+    Baseline & 1 & 128 & - & 111.4 & 1 & 432.6 & 432.6 & 432.6 & - & 1 \\
+    Sub Power & 16 & 128 & 4 & 16.5 & 0.148 & 12664.1 & 12693.7 & 12677.0 & 6.2537 & 1.089 \\
+    Sub Power & 16 & 128 & 8 & 26.6 & 0.239 & 12282.5 & 12298.3 & 12290.0 & 3.1376 & 1.056 \\
+    Sub Power & 16 & 128 & 16 & 52.6 & 0.472 & 11971.6 & 11979.0 & 11974.7 & 1.314 & 1.030 \\
+    \bottomrule
+  \end{tabular}
+  }
+\end{table}
