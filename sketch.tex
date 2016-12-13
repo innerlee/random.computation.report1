@@ -19,11 +19,11 @@ We divide the process into two phases and count the running time independently.
 The first phase is sketching and
 the second phase includes all the remaining steps
 which is to solve a reduced version of the problem.
-Results are shown in Table~\ref{tab:frob}
+Results are shown in Table~\ref{tab:frob}.
 
 \begin{table}[htb]
   \setlength{\tabcolsep}{2.6pt}
-  \caption{The performances of different Sketching techniques.
+  \caption{The performances of different sketching techniques.
   $k$ is the rank used, $t$ is the dimension for sketching.
   time-$i$ is the average time spent on phase~$i$.
   Losses are measured by Frobenius norms.
@@ -43,3 +43,17 @@ Results are shown in Table~\ref{tab:frob}
   \end{tabular}
   }
 \end{table}
+
+\subsection{Operator norm}
+The operator norm problem was tackled by the subspace power method.
+We implemented it in the \textit{sub\_power()} function.
+The general steps go like this,
+\begin{enumerate}
+    \item Input: matrix $A\in \real^{138493\times 26744}$,
+    rank $k=128$, power $q\in\{10,20,40\}$.
+    \item Generate random Gaussian matrix $G\in\real^{26744\times k}$.
+    \item $Y=A*G$.
+    \item repeat $Y = A^T Y, Y=AY$, for $q$ times.\
+    \item Do qr factorization $Z, \_ = \text{qr}(Y)$.
+    \item Output: $\tilde{A}_k = Z Z^T A$.
+\end{enumerate}
