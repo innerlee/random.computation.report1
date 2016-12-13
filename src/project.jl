@@ -250,7 +250,7 @@ function bench_sub_power(repeat=1, qq=[4])
         println("> will power $q times")
         results = []
         for i = 1:repeat
-            r = sub_power(fA, q=q)
+            r = sub_power(fA, fAt, q=q)
             push!(results, r)
         end
 
