@@ -16,7 +16,8 @@
         "svds",
         "frob",
         "time1",
-        "time2"
+        "time2",
+        "renormalize"
     ],
     "documentTypes": [
         "markdown",

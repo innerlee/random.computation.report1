@@ -1,5 +1,11 @@
 \section{Sketching}
 
+In this section,
+we implemented the low-rank approximation of matrix $A$
+in two settings: Frobenius norm and operator norm.
+Most of the algorithm is described in the textbook
+article~\cite{woodruff2014sketching}.
+
 \subsection{Frobenius norm}
 For simplicity, we use sparse embedding, \ie the count sketch
 to find a subspace that may contain a good low-rank approximation to $A$.
@@ -33,7 +39,7 @@ Results are shown in Table~\ref{tab:frob}.
   {\small
   \begin{tabular}{llllllllllll}
     \toprule
-    algorithm & repeat & $k$ & $t$ & time1\&2 & time & time ratio & min err & max err & mean err & std err & err ratio \\
+    algorithm & repeat & $k$ & $t$ & time1\&2 & time (s) & time ratio & min err & max err & mean err & std err & err ratio \\
     \midrule
     Baseline & 1 & 128 & - & - & 111.4 & 1 & 11622.2 & 11622.2 & 11622.2 & - & 1 \\
     Sketching & 100 & 128 & 256 & 2.7/13.8 & 16.5 & 0.148 & 12664.1 & 12693.7 & 12677.0 & 6.2537 & 1.089 \\
@@ -74,13 +80,72 @@ we reduced the repeat number to 16.
   {\small
   \begin{tabular}{lllllllllll}
     \toprule
-    algorithm & repeat & $k$ & $q$ & time & time ratio & min err & max err & mean err & std err & err ratio \\
+    algorithm & repeat & $k$ & $q$ & time (s) & time ratio & min err & max err & mean err & std err & err ratio \\
     \midrule
     Baseline & 1 & 128 & - & 111.4 & 1 & 432.6 & 432.6 & 432.6 & - & 1 \\
-    Sub Power & 16 & 128 & 4 & 16.5 & 0.148 & 12664.1 & 12693.7 & 12677.0 & 6.2537 & 1.089 \\
-    Sub Power & 16 & 128 & 8 & 26.6 & 0.239 & 12282.5 & 12298.3 & 12290.0 & 3.1376 & 1.056 \\
-    Sub Power & 16 & 128 & 16 & 52.6 & 0.472 & 11971.6 & 11979.0 & 11974.7 & 1.314 & 1.030 \\
+    Sub Power & 16 & 128 & 4 & 53.3 & 0.479 & 460.0 & 470.9 & 466.6 & 3.031 & 1.063 \\
+    Sub Power & 16 & 128 & 8 & 88.4 & 0.794 & 663.3 & 694.6 & 683.6 & 8.984 & 1.533 \\
+    Sub Power & 16 & 128 & 16 & 165.1 & 1.482 & 1908.6 & 1960.7 & 1933.3 & 15.113 & 4.412 \\
     \bottomrule
   \end{tabular}
   }
 \end{table}
+
+The result is astonishing.
+By doing powers more,
+we get worse performance.
+What is the problem then?
+We analyzed the matrices in the middle of computations and
+found two problems,
+\begin{enumerate}
+    \item Without renormalize,
+        elements in matrix $Y$ soon explode to extremely large values.
+        This may lead to numerical issues in the later qr computation.
+    \item Simply scale the matrix to a lower level would not effect
+        that well as expected.
+        We then found that column vectors in $Y$ did not orthogonal with each other.
+        In fact, we computed the some of the pair-wise angles
+        and found that they are quite close to collinear after
+        many power iterations.
+\end{enumerate}
+
+By the above analysis,
+we made modifications to the algorithm
+by adding an extra qr step in the loop.
+\ie, from
+\begin{itemize}
+    \item repeat $Y = A^T Y,\  Y=AY$, for $q$ times.
+\end{itemize}
+to
+\begin{itemize}
+    \item repeat $Y = A^T Y,\  Y=AY,\  Y,\_=\text{qr}(Y)$, for $q$ times.
+\end{itemize}
+
+New results are listed in Table~\ref{tab:fix}.
+
+\begin{table}[htb]
+  \setlength{\tabcolsep}{2.6pt}
+  \caption{The performances of the fixed version of subspace power method,
+    in which an extra qr step was added to the power loop.
+    $k$ is the rank used, $q$ is the power used.
+    time is the in seconds and
+    errors are measured by operator norms.
+    }
+  \label{tab:fix}
+  \centering
+  {\small
+  \begin{tabular}{lllllllllll}
+    \toprule
+    algorithm & repeat & $k$ & $q$ & time (s) & time ratio & min err & max err & mean err & std err & err ratio \\
+    \midrule
+    Baseline & 1 & 128 & - & 111.4 & 1 & 432.6 & 432.6 & 432.6 & - & 1 \\
+    Sub Power (fix) & 16 & 128 & 4 & 53.3 & 0.479 & 460.0 & 470.9 & 466.6 & 3.031 & 1.063 \\
+    Sub Power (fix) & 16 & 128 & 8 & 99.2 & 0.890 & 445.5 & 454.7 & 450.7 & 2.273 & 1.029 \\
+    Sub Power (fix) & 16 & 128 & 16 & 178.2 & 1.600 & 437.9 & 443.9 & 440.9 & 1.820 & 1.012 \\
+    \bottomrule
+  \end{tabular}
+  }
+\end{table}
+
+The extra qr step added computation time to the algorithm.
+Nevertheless, the accuracy also grows.

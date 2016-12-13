@@ -27,4 +27,16 @@ we can observe that
         the time gain is not ideal.
         In the $t=1024$ case,
         we only achieved a 2x speed up.
+    \item The original algorithm low-rank approximation under operator norm
+        has some numerical issues as we discussed in the corresponding section.
+        We solved the problem by inserting an additional normalize operation.
+    \item If we want to get high precision using subspace power method
+        in the operator norm case, the running time may be not favorable
+        as we have seen in the last row of Table~\ref{tab:fix}.
+        This is because the method contains lots of matrix multiplications,
+        which are time consuming.
+    \item In both of the cases,
+        sketching method for matrix multiplication that keep operator norm
+        is wanted since the speed bottleneck lies in
+        the multiplication operation.
 \end{itemize}
