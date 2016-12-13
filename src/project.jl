@@ -276,5 +276,5 @@ REPEAT2 = 16
 QQ     = [4, 8, 16]
 
 # main
-# bench_sketch_frob(REPEAT, TT)
+bench_sketch_frob(REPEAT, TT)
 bench_sub_power(REPEAT2, QQ)
