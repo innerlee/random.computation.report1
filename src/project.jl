@@ -245,7 +245,7 @@ function bench_sub_power(repeat=1, qq=[4])
     t0 = 111.4
     e0 = 424.3
     for q in qq
-        println("> will reduce A with size $(size(A)) to $q rows")
+        println("> will power $q times")
         results = []
         for i = 1:repeat
             r = sub_power(fA, q=q)
@@ -270,7 +270,7 @@ end
 ## config
 REPEAT = 100
 TT     = [256, 512, 1024]
-QQ     = [8, 16, 32]
+QQ     = [4, 8, 16]
 
 # main
 bench_sketch_frob(REPEAT, TT)
