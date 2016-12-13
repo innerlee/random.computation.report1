@@ -10,6 +10,11 @@
 ### codes
 * [``src/project.jl``](src/project.jl)
 
+### raw results
+* [``result/proj.frob.txt``](result/proj.frob.txt) Data for Table 1.
+* [``result/proj.op.txt``](result/proj.op.txt) Data for Table 2.
+* [``result/proj.op.qr.txt``](result/proj.op.qr.txt) Data for Table 3.
+
 ----
 
 # hw2
@@ -21,7 +26,7 @@
 * [``src/hw2.jl``](src/hw2.jl)
 * [``src/l1.solver.jl``](src/l1.solver.jl)
 
-### raw data
+### raw results
 * [``result/l1.100.txt``](result/l1.100.txt)
 * [``result/l1.500.txt``](result/l1.500.txt)
 
