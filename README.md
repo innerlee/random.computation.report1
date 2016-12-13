@@ -2,7 +2,7 @@
 
 ### dataset
 
-[MovieLens 20M](http://grouplens.org/datasets/movielens/20m/)
+* [MovieLens 20M](http://grouplens.org/datasets/movielens/20m/)
 
 ### report
 * [project.pdf](project.pdf)
