@@ -6,16 +6,25 @@ we can observe that
     \item In the Frobenius norm setting,
         most of the time was spent on the second phase,
         \ie solving the smaller sized problem.
-        More specifically,
+        Specifically,
         Almost all time was used in the multiplication $AQ$.
     \item To accelerate this multiplication,
         we tried multiple methods.
-        One of the interesting fact is that,
+        The interesting fact is that,
         by converting matrix $A$ from sparse to full,
         the multiplication will be much faster
-        (from 50s to 5s).
-        This might due to factors like cache or memory alignment.
-        It would be good if we can use sketching
-        that keep operator norm of product of two matrices
-        to accelerate this multiplication.
+        (50s v.s. 5s).
+        This might due to cache or memory alignment or so.
+        It would be good if sketching
+        that keep operator norm of the product of two matrices
+        can be used here.
+    \item The error of sketching in different runs is stable
+        as we can see from the small std values.
+        The relative error is below 5\% when sketching to
+        $t=1024$ dimension.
+        Smaller $t$ leads larger error.
+        Due to to time consuming multiplication,
+        the time gain is not ideal.
+        In the $t=1024$ case,
+        we only achieved a 2x speed up.
 \end{itemize}
