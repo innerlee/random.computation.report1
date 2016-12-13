@@ -1,1 +1,21 @@
 \section{Discussion}
+
+From the experiments,
+we can observe that
+\begin{itemize}
+    \item In the Frobenius norm setting,
+        most of the time was spent on the second phase,
+        \ie solving the smaller sized problem.
+        More specifically,
+        Almost all time was used in the multiplication $AQ$.
+    \item To accelerate this multiplication,
+        we tried multiple methods.
+        One of the interesting fact is that,
+        by converting matrix $A$ from sparse to full,
+        the multiplication will be much faster
+        (from 50s to 5s).
+        This might due to factors like cache or memory alignment.
+        It would be good if we can use sketching
+        that keep operator norm of product of two matrices
+        to accelerate this multiplication.
+\end{itemize}
